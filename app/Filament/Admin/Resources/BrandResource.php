@@ -5,6 +5,7 @@ namespace App\Filament\Admin\Resources;
 use Filament\Forms;
 use Filament\Tables;
 use App\Models\Brand;
+use Filament\Forms\Set;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Illuminate\Support\Str;
@@ -58,7 +59,7 @@ class BrandResource extends Resource
 
                             FileUpload::make('image')
                             ->image(255)
-                            ->directory('categories'),
+                            ->directory('brands'),
                             
                             Toggle::make('is_active')
                             ->required()
@@ -91,7 +92,9 @@ class BrandResource extends Resource
                 //
             ])
             ->actions([
+                Tables\Actions\viewAction::make(),
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\deleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
