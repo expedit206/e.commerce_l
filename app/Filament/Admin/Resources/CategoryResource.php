@@ -50,7 +50,7 @@ class CategoryResource extends Resource
                                 ->maxLength(255)
                                 
                             ]),
-                            
+
                             FileUpload::make('image')
                             ->image(255)
                             ->directory('categories'),
@@ -86,7 +86,9 @@ class CategoryResource extends Resource
                 //
             ])
             ->actions([
+                Tables\Actions\viewAction::make(),
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\deleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
