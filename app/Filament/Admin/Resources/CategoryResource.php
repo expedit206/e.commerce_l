@@ -2,16 +2,26 @@
 
 namespace App\Filament\Admin\Resources;
 
-use App\Filament\Admin\Resources\CategoryResource\Pages;
-use App\Filament\Admin\Resources\CategoryResource\RelationManagers;
-use App\Models\Category;
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Forms\Set;
+use App\Models\Category;
+use Filament\Forms\Form;
 use Filament\Tables\Table;
+use Illuminate\Support\Str;
+use Filament\Resources\Resource;
+use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\Toggle;
+use Filament\Forms\Components\Section;
+use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Forms\Components\TextInput;
+use Filament\Tables\Columns\ImageColumn;
+use Filament\Forms\Components\FileUpload;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Admin\Resources\CategoryResource\Pages;
+use App\Filament\Admin\Resources\CategoryResource\RelationManagers;
 
 class CategoryResource extends Resource
 {
@@ -23,13 +33,32 @@ class CategoryResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('slug')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\FileUpload::make('image')
-                    ->image(),
-                Forms\Components\Toggle::make('is_active')
-                    ->required(),
+                Section::make([
+                    Grid::make()
+                        ->schema([
+                            TextInput::make('name')
+                                ->required()
+                                ->maxLength(255)
+                                ->live()
+                                ->afterStateUpdated(fn(string $operation, $state, Set $set)=> $operation=== 'create' ? $set('slug', Str::slug($state)) : null),
+
+                            TextInput::make('slug')
+                                ->required()
+                                ->dehydrated()
+                                ->readOnly()
+                                ->unique(Category::class, 'slug', ignoreRecord: true )
+                                ->maxLength(255)
+                                
+                            ]),
+                            
+                            FileUpload::make('image')
+                            ->image(255)
+                            ->directory('categories'),
+                            
+                            Toggle::make('is_active')
+                            ->required()
+                            ->default(true),
+                ])
             ]);
     }
 
@@ -37,6 +66,8 @@ class CategoryResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('name')
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('slug')
                     ->searchable(),
                 Tables\Columns\ImageColumn::make('image'),
