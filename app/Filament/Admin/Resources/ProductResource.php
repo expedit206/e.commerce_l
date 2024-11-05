@@ -9,7 +9,6 @@ use Filament\Forms\Set;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Illuminate\Support\Str;
-use Filament\Actions\EditAction;
 use Filament\Resources\Resource;
 use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Select;
@@ -18,7 +17,9 @@ use Filament\Forms\Components\Section;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
+use Filament\Tables\Actions\ActionGroup;
 use Filament\Forms\Components\FileUpload;
+use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Tables\Actions\BulkActionGroup;
 use Filament\Forms\Components\MarkdownEditor;
@@ -80,6 +81,7 @@ class ProductResource extends Resource
                             ->prefix('FCFA')
                         ]),
 
+                    
                         Section::make('Associtaions')->schema([
                             Select::make('category_id')
                             ->required()
@@ -119,28 +121,24 @@ class ProductResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('category_id')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('brand_id')
-                    ->numeric()
-                    ->sortable(),
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('slug')
+                Tables\Columns\TextColumn::make('category.name')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('images')
+                Tables\Columns\TextColumn::make('brand.name')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('price')
-                    ->money()
-                    ->sortable(),
+                    Tables\Columns\TextColumn::make('price')
+                        ->money('fcfa')
+                        ->sortable(),
+                // Tables\Columns\TextColumn::make('images')
+                //     ->searchable(),
                 Tables\Columns\IconColumn::make('is_active')
                     ->boolean(),
                 Tables\Columns\IconColumn::make('is_featured')
                     ->boolean(),
                 Tables\Columns\IconColumn::make('in_stock')
                     ->boolean(),
-                Tables\Columns\IconColumn::make('on_dsale')
+                Tables\Columns\IconColumn::make('on_sale')
                     ->boolean(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
@@ -152,10 +150,17 @@ class ProductResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                SelectFilter::make('category')
+                ->relationship('category', 'name'),
+                SelectFilter::make('brand')
+                ->relationship('brand', 'name')
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                ActionGroup::make([
+                    Tables\Actions\ViewAction::make(),
+                    Tables\Actions\EditAction::make(),
+                    Tables\Actions\DeleteAction::make(),
+                ]),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
