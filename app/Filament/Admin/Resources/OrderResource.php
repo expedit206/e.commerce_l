@@ -13,6 +13,8 @@ use Filament\Resources\Resource;
 use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\Textarea;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Forms\Components\ToggleButtons;
 use Filament\Tables\Actions\BulkActionGroup;
@@ -105,10 +107,26 @@ class OrderResource extends Resource
                           ])
                           ->default('fedex'),
 
-                        Textarea::make('notes')                          
-                          
-                    ])
-                    ]) 
+                            Textarea::make('notes')    
+                            ->columnSpanFull()                       
+                      ])->columns(2),
+
+                    //   Section::make('Order Items')->schema([
+                    //     Repeater::make('items')
+                    //     ->relationship()
+                    //     ->schema([
+                    //         Select::make('product_id')
+                    //         ->relationship('product', 'name')
+                    //         ->searchable()
+                    //         ->preload()
+                    //          ->required()
+                    //          ->distinct()
+                    //          ->disableOptionsWhenSelectedInSiblingRepeaterItems()
+                    //     ])
+                    //   ])
+
+                    // 22:09 min
+                ]) 
                      ->columnSpanFull()
             ]);
     }
