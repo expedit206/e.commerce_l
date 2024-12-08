@@ -2,30 +2,31 @@
 
 namespace App\Filament\Admin\Resources;
 
-use Filament\Forms;
-use Filament\Tables;
+use App\Filament\Admin\Resources\OrderResource\Pages;
+use App\Filament\Admin\Resources\OrderResource\Pages\CreateOrder;
+use App\Filament\Admin\Resources\OrderResource\Pages\EditOrder;
+use App\Filament\Admin\Resources\OrderResource\Pages\ListOrders;
+use App\Filament\Admin\Resources\OrderResource\Pages\ViewOrder;
+use App\Filament\Admin\Resources\OrderResource\RelationManagers;
+use App\Filament\Admin\Resources\OrderResource\RelationManagers\AddressRelationManager;
 use App\Models\Order;
-use Filament\Forms\Form;
-use Filament\Tables\Table;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
-use Filament\Resources\Resource;
+use Filament\Forms;
 use Filament\Forms\Components\Group;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
-use Illuminate\Database\Eloquent\Builder;
 use Filament\Forms\Components\ToggleButtons;
+use Filament\Forms\Form;
+use Filament\Resources\Resource;
+use Filament\Tables;
 use Filament\Tables\Actions\BulkActionGroup;
 use Filament\Tables\Actions\DeleteBulkAction;
+use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use App\Filament\Admin\Resources\OrderResource\Pages;
-use App\Filament\Admin\Resources\OrderResource\Pages\EditOrder;
-use App\Filament\Admin\Resources\OrderResource\Pages\ViewOrder;
-use App\Filament\Admin\Resources\OrderResource\Pages\ListOrders;
-use App\Filament\Admin\Resources\OrderResource\RelationManagers;
-use App\Filament\Admin\Resources\OrderResource\Pages\CreateOrder;
 
 class OrderResource extends Resource
 {
@@ -155,7 +156,7 @@ class OrderResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            AddressRelationManager::class
         ];
     }
 
