@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Models\OrderItem;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 
 class Order extends Model
@@ -26,7 +28,7 @@ class Order extends Model
 
        public function items()
        {
-           return $this->hasMany(OrderItems::class);
+           return $this->hasMany(OrderItem::class);
        }
 
        public function address()
