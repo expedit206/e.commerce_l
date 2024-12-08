@@ -11,8 +11,7 @@ use App\Filament\Admin\Resources\OrderResource\RelationManagers;
 use App\Filament\Admin\Resources\OrderResource\RelationManagers\AddressRelationManager;
 use App\Models\Order;
 use App\Models\Product;
-use Filament\Actions\EditAction;
-use Filament\Actions\ViewAction;
+
 use Filament\Forms;
 use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Hidden;
@@ -28,13 +27,18 @@ use Filament\Forms\Get;
 use Filament\Forms\Set;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Actions\BulkActionGroup;
+use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Actions\DeleteBulkAction;
+use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Actions\ViewAction;
+use Filament\Tables\Columns\SelectColumn;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Number;
-use Filament\Tables\Columns\TextColumn;
 
 class OrderResource extends Resource
 {
@@ -55,14 +59,14 @@ class OrderResource extends Resource
                         ->searchable()
                         ->required(),
 
-                        Select::make('payment method')
+                        Select::make('payment_method')
                         ->options([
                             'orange'=>'Orange ',
                             'mtn'=>'MTN',
                             'cod'=>'cash on delivery'
                         ])->required(),
 
-                        Select::make('payment status')
+                        Select::make('payment_status')
                         ->options([
                             'pending'=>'Pending ',
                             'paid'=>'Paid',
@@ -200,11 +204,19 @@ class OrderResource extends Resource
                 ->sortable()
                 ->money('XAF'),
 
-                TextColumn::make('payement_method')
+                TextColumn::make('payment_method')
                 ->sortable()      
                 ->searchable(),
 
-                TextColumn::make('payement_status')
+                TextColumn::make('payment_status')
+                ->sortable()      
+                ->searchable(),
+
+                TextColumn::make('currency')
+                ->sortable()      
+                ->searchable(),
+
+                TextColumn::make('shipping_method')
                 ->sortable()      
                 ->searchable(),
 
@@ -215,16 +227,30 @@ class OrderResource extends Resource
                     'shipped'=>'Shipped',
                     'delivered'=>'Delivered',
                     'cancelled'=>'Cancelled',
-                ])      
+                ])
+                ->sortable()      
                 ->searchable(),
 
+                
+                TextColumn::make('created_at')
+                ->sortable()      
+                ->toggleable()      
+                ->dateTime(),
+
+                TextColumn::make('updated_at')
+                ->sortable()      
+                ->toggleable()      
+                ->dateTime(),
             ])
             ->filters([
                 //
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
+                ActionGroup::make([
+                    ViewAction::make(),
+                    EditAction::make(),
+                    DeleteAction::make(),
+                ])
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -238,6 +264,14 @@ class OrderResource extends Resource
         return [
             AddressRelationManager::class
         ];
+    }
+
+    public static function getNavigationBadge(): ?string{
+    return static::getModel()::count();
+    }
+
+    public static function getNavigationBadgeColor(): ?string{
+    return static::getModel()::count() > 10 ? 'danger': 'success';
     }
 
     public static function getPages(): array
