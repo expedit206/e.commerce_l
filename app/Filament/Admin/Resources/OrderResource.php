@@ -107,8 +107,8 @@ class OrderResource extends Resource
                           ])
                           ->default('fedex'),
 
-                            Textarea::make('notes')    
-                            ->columnSpanFull()                       
+                            Textarea::make('notes')
+                            ->columnSpanFull()
                       ])->columns(2),
 
                     //   Section::make('Order Items')->schema([
@@ -124,10 +124,10 @@ class OrderResource extends Resource
                     //          ->disableOptionsWhenSelectedInSiblingRepeaterItems()
                     //     ])
                     //   ])
-                    
+
 
                     // 22:09 min
-                ]) 
+                ])
                      ->columnSpanFull()
             ]);
     }
